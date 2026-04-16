@@ -3,201 +3,1043 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hub de APIs e IA</title>
+  <title>Hub de APIs e Inteligência Artificial</title>
+  
+  <!-- SEO & Meta Tags -->
+  <meta name="description" content="Hub gratuito com ranking de APIs de IA: Groq, Hugging Face, Gemini e mais. Compare desempenho, custo e recursos.">
+  <meta name="keywords" content="APIs de IA, inteligência artificial, ferramentas dev, free tier, LLM, machine learning">
+  <meta name="author" content="Hub de APIs">
+  <meta name="robots" content="index, follow">
+  
+  <!-- Open Graph / Social -->
+  <meta property="og:title" content="🤖 Hub de APIs e Inteligência Artificial">
+  <meta property="og:description" content="Compare e encontre APIs de IA gratuitas com score atualizado automaticamente.">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="pt_BR">
+  
+  <!-- Favicon (placeholder) -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>">
 
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      background: #0f172a;
-      color: #e2e8f0;
+    /* ===== RESET & BASE ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    :root {
+      --bg-primary: #0f172a;
+      --bg-secondary: #111827;
+      --bg-card: #1e293b;
+      --bg-hover: #334155;
+      --text-primary: #e2e8f0;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --score-gradient: linear-gradient(90deg, #22c55e, #3b82f6, #8b5cf6);
+      --border-radius: 12px;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.15);
+      --transition: all 0.2s ease;
     }
 
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg-primary: #f8fafc;
+        --bg-secondary: #f1f5f9;
+        --bg-card: #ffffff;
+        --bg-hover: #e2e8f0;
+        --text-primary: #0f172a;
+        --text-secondary: #475569;
+        --text-muted: #94a3b8;
+      }
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ===== ACESSIBILIDADE ===== */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+      .card:hover { transform: none !important; }
+    }
+
+    /* ===== HEADER ===== */
     header {
-      padding: 25px;
+      padding: 24px 16px;
       text-align: center;
-      background: #111827;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--bg-hover);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(8px);
     }
 
     header h1 {
-      margin: 0;
-      font-size: 24px;
+      font-size: clamp(1.25rem, 4vw, 1.5rem);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
 
     header p {
-      color: #94a3b8;
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      max-width: 600px;
+      margin: 0 auto;
     }
 
-    .search {
+    /* ===== SEARCH ===== */
+    .search-wrapper {
+      padding: 16px;
       display: flex;
       justify-content: center;
-      margin: 20px;
+      gap: 12px;
+      flex-wrap: wrap;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--bg-hover);
     }
 
-    input {
-      width: 90%;
-      max-width: 500px;
-      padding: 12px;
-      border-radius: 8px;
-      border: none;
+    .search-container {
+      position: relative;
+      width: 100%;
+      max-width: 520px;
+    }
+
+    #searchInput {
+      width: 100%;
+      padding: 14px 20px 14px 44px;
+      border-radius: var(--border-radius);
+      border: 2px solid var(--bg-hover);
+      background: var(--bg-card);
+      color: var(--text-primary);
+      font-size: 1rem;
+      transition: var(--transition);
       outline: none;
     }
 
-    .container {
+    #searchInput:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    }
+
+    #searchInput::placeholder {
+      color: var(--text-muted);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      pointer-events: none;
+      font-size: 1.1rem;
+    }
+
+    .refresh-btn {
+      padding: 14px 20px;
+      background: var(--bg-card);
+      border: 2px solid var(--bg-hover);
+      border-radius: var(--border-radius);
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      cursor: pointer;
       display: flex;
-      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+      transition: var(--transition);
+      white-space: nowrap;
+    }
+
+    .refresh-btn:hover {
+      background: var(--bg-hover);
+      border-color: var(--accent);
+    }
+
+    .refresh-btn:active {
+      transform: scale(0.98);
+    }
+
+    .refresh-btn.loading {
+      pointer-events: none;
+      opacity: 0.7;
+    }
+
+    /* ===== CONTROLS (Tags & Stats) ===== */
+    .controls {
+      padding: 8px 16px 16px;
+      display: flex;
       justify-content: center;
-      gap: 15px;
-      padding: 10px;
+      gap: 8px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--bg-hover);
+    }
+
+    .tag-filter {
+      padding: 6px 14px;
+      background: var(--bg-card);
+      border: 1px solid var(--bg-hover);
+      border-radius: 20px;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+      user-select: none;
+    }
+
+    .tag-filter:hover,
+    .tag-filter.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+
+    .stats {
+      padding: 8px 16px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .stat-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* ===== CONTAINER & CARDS ===== */
+    .container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      gap: 16px;
+      padding: 16px;
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+      flex: 1;
     }
 
     .card {
-      background: #1e293b;
-      border-radius: 12px;
-      padding: 15px;
-      width: 300px;
-      transition: 0.2s;
+      background: var(--bg-card);
+      border-radius: var(--border-radius);
+      padding: 18px;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      border: 1px solid transparent;
+      position: relative;
     }
 
     .card:hover {
-      transform: scale(1.03);
+      transform: translateY(-4px);
+      border-color: var(--accent);
+      box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.4);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 12px;
     }
 
     .rank {
-      font-size: 12px;
-      color: #38bdf8;
-      margin-bottom: 5px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--accent);
+      background: rgba(59, 130, 246, 0.15);
+      padding: 4px 10px;
+      border-radius: 20px;
+      white-space: nowrap;
     }
 
-    .score {
-      font-size: 12px;
-      color: #a7f3d0;
+    .favorite-btn {
+      background: none;
+      border: none;
+      font-size: 1.3rem;
+      cursor: pointer;
+      padding: 4px;
+      transition: var(--transition);
+      line-height: 1;
+      color: var(--text-muted);
+    }
+
+    .favorite-btn:hover,
+    .favorite-btn.active {
+      color: var(--danger);
+      transform: scale(1.1);
+    }
+
+    .card h3 {
+      font-size: 1.1rem;
+      margin-bottom: 8px;
+      line-height: 1.4;
+      flex: 1;
+    }
+
+    .card p {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      margin-bottom: 14px;
+      flex: 1;
+    }
+
+    /* Score Bar */
+    .score-wrapper {
+      margin: 12px 0;
+    }
+
+    .score-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+      font-size: 0.85rem;
+    }
+
+    .score-value {
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .score-bar {
+      height: 6px;
+      background: var(--bg-hover);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .score-fill {
+      height: 100%;
+      background: var(--score-gradient);
+      border-radius: 3px;
+      transition: width 0.4s ease;
+      width: var(--score, 0%);
+    }
+
+    /* Tags */
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+
+    .tag {
+      font-size: 0.75rem;
+      padding: 4px 10px;
+      background: var(--bg-hover);
+      border-radius: 12px;
+      color: var(--text-secondary);
+    }
+
+    /* Actions */
+    .card-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: auto;
     }
 
     .btn {
-      display: inline-block;
-      margin-top: 10px;
-      padding: 8px 12px;
-      background: #3b82f6;
+      flex: 1;
+      padding: 10px 14px;
+      background: var(--accent);
       color: white;
       text-decoration: none;
-      border-radius: 6px;
-      font-size: 13px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      text-align: center;
+      transition: var(--transition);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
     }
 
+    .btn:hover {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .btn-secondary {
+      background: var(--bg-hover);
+      color: var(--text-primary);
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-card);
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 48px 24px;
+      color: var(--text-muted);
+      grid-column: 1 / -1;
+    }
+
+    .empty-state svg {
+      width: 64px;
+      height: 64px;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+
+    /* Footer */
     footer {
       text-align: center;
-      padding: 20px;
-      color: #64748b;
-      font-size: 12px;
+      padding: 20px 16px;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--bg-hover);
+      margin-top: auto;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .footer-links a:hover {
+      color: var(--accent);
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--bg-card);
+      color: var(--text-primary);
+      padding: 14px 20px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 1000;
+      transform: translateX(150%);
+      transition: transform 0.3s ease;
+      border-left: 4px solid var(--success);
+    }
+
+    .toast.show {
+      transform: translateX(0);
+    }
+
+    .toast.error {
+      border-left-color: var(--danger);
+    }
+
+    /* Loading Skeleton */
+    .skeleton {
+      background: linear-gradient(90deg, var(--bg-card) 25%, var(--bg-hover) 50%, var(--bg-card) 75%);
+      background-size: 200% 100%;
+      animation: skeleton-loading 1.4s infinite;
+      border-radius: 4px;
+    }
+
+    @keyframes skeleton-loading {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 640px) {
+      .search-wrapper {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .refresh-btn {
+        width: 100%;
+        max-width: 520px;
+        justify-content: center;
+      }
+      
+      .card-actions {
+        flex-direction: column;
+      }
+      
+      .btn {
+        width: 100%;
+      }
+      
+      .controls {
+        padding: 8px 12px 12px;
+      }
+      
+      .tag-filter {
+        padding: 5px 12px;
+        font-size: 0.8rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      header {
+        padding: 16px 12px;
+      }
+      
+      .container {
+        grid-template-columns: 1fr;
+        padding: 12px;
+      }
+      
+      .card {
+        padding: 16px;
+      }
+      
+      #searchInput {
+        font-size: 16px; /* Previne zoom no iOS */
+        padding: 12px 16px 12px 40px;
+      }
+    }
+
+    /* Focus visible para navegação por teclado */
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
     }
   </style>
 </head>
 
 <body>
 
-<header>
-  <h1>🤖 Hub de APIs e Inteligência Artificial</h1>
-  <p>Ranking gratuito de ferramentas e APIs de IA atualizado automaticamente</p>
-</header>
+  <!-- Toast Notification -->
+  <div id="toast" class="toast" role="alert" aria-live="polite">
+    <span id="toast-icon">✓</span>
+    <span id="toast-message">Ação realizada!</span>
+  </div>
 
-<!-- SEARCH -->
-<div class="search">
-  <input id="searchInput" placeholder="🔎 Buscar API ou ferramenta..." onkeyup="render()">
-</div>
+  <header>
+    <h1>🤖 Hub de APIs e IA</h1>
+    <p>Ranking gratuito de ferramentas e APIs de inteligência artificial</p>
+  </header>
 
-<!-- LIST -->
-<div class="container" id="list"></div>
+  <!-- Search & Refresh -->
+  <div class="search-wrapper">
+    <div class="search-container">
+      <span class="search-icon" aria-hidden="true">🔎</span>
+      <label for="searchInput" class="sr-only">Buscar API ou ferramenta</label>
+      <input 
+        id="searchInput" 
+        type="search" 
+        placeholder="Buscar por nome, descrição ou tag..." 
+        autocomplete="off"
+        aria-describedby="searchHint"
+      >
+      <span id="searchHint" class="sr-only">Digite para filtrar as APIs listadas abaixo</span>
+    </div>
+    <button id="refreshBtn" class="refresh-btn" aria-label="Atualizar ranking">
+      <span id="refreshIcon">🔄</span>
+      <span id="refreshText">Atualizar</span>
+    </button>
+  </div>
 
-<footer>
-  Sistema gratuito de curadoria de APIs • Atualização automática simulada
-</footer>
+  <!-- Tag Filters -->
+  <div class="controls" id="tagFilters" role="tablist" aria-label="Filtrar por categoria">
+    <button class="tag-filter active" data-tag="all" role="tab" aria-selected="true">Todas</button>
+    <button class="tag-filter" data-tag="llm" role="tab">LLM</button>
+    <button class="tag-filter" data-tag="gratis" role="tab">Free Tier</button>
+    <button class="tag-filter" data-tag="rapida" role="tab">Rápida</button>
+    <button class="tag-filter" data-tag="open-source" role="tab">Open Source</button>
+    <button class="tag-filter" data-tag="comparador" role="tab">Comparador</button>
+  </div>
 
-<script>
-/* ---------------------------
-   BASE DE DADOS (EDITÁVEL)
-----------------------------*/
-let apis = [
-  {
-    name: "Artificial Analysis",
-    desc: "Comparador de modelos de IA (GPT, Claude, Gemini). Mostra custo, velocidade e performance.",
-    url: "https://artificialanalysis.ai/",
-    score: 95
-  },
-  {
-    name: "APIs Gratuitas (BitNada)",
-    desc: "Lista de APIs com free tier como Gemini, Hugging Face, OpenRouter e outras.",
-    url: "https://bitnada.com.br/ia/apis-gratuitas.html",
-    score: 85
-  },
-  {
-    name: "Groq API",
-    desc: "API extremamente rápida para LLMs open-source como Llama e Mixtral.",
-    url: "https://groq.com/",
-    score: 90
-  },
-  {
-    name: "Hugging Face API",
-    desc: "Plataforma com centenas de modelos open-source para IA e NLP.",
-    url: "https://huggingface.co/",
-    score: 88
-  }
-];
+  <!-- Stats -->
+  <div class="stats">
+    <span class="stat-item">📊 <span id="totalApis">4</span> APIs listadas</span>
+    <span class="stat-item">⭐ <span id="avgScore">89.5</span> Score médio</span>
+    <span class="stat-item">🕐 <span id="lastUpdate">--:--</span></span>
+  </div>
 
-/* ---------------------------
-   RENDERIZAÇÃO + RANKING
-----------------------------*/
-function render() {
-  const list = document.getElementById("list");
-  const search = document.getElementById("searchInput").value.toLowerCase();
+  <!-- Cards Container -->
+  <main class="container" id="list" aria-live="polite">
+    <!-- Cards serão inseridos aqui via JavaScript -->
+  </main>
 
-  let filtered = apis.filter(a =>
-    a.name.toLowerCase().includes(search) ||
-    a.desc.toLowerCase().includes(search)
-  );
+  <footer>
+    <p>Sistema gratuito de curadoria de APIs • Dados atualizados automaticamente</p>
+    <div class="footer-links">
+      <a href="#" id="toggleTheme">🌓 Alternar tema</a>
+      <a href="https://github.com" target="_blank" rel="noopener">💻 Código fonte</a>
+      <a href="#" id="exportData">📥 Exportar dados</a>
+    </div>
+  </footer>
 
-  // ranking automático
-  filtered.sort((a, b) => b.score - a.score);
-
-  list.innerHTML = "";
-
-  filtered.forEach((api, index) => {
-    list.innerHTML += `
-      <div class="card">
-        <div class="rank">#${index + 1} no ranking</div>
-        <h3>${api.name}</h3>
-        <p>${api.desc}</p>
-        <div class="score">Score: ${api.score}</div>
-        <a class="btn" href="${api.url}" target="_blank">Acessar</a>
-      </div>
-    `;
-  });
-}
-
-/* ---------------------------
-   AUTO UPDATE SIMULADO
-   (aqui você pode trocar por API real depois)
-----------------------------*/
-function autoUpdate() {
-  apis = apis.map(api => {
-    // simula variação leve de score
-    let variation = Math.floor(Math.random() * 3) - 1;
-    return {
-      ...api,
-      score: Math.min(100, Math.max(60, api.score + variation))
+  <script>
+    /* ========================================
+       CONFIGURAÇÃO & ESTADO GLOBAL
+       ======================================== */
+    const CONFIG = {
+      debounceDelay: 250,
+      autoUpdateInterval: 15000,
+      scoreVariation: 2,
+      minScore: 60,
+      maxScore: 100
     };
-  });
 
-  render();
-}
+    const state = {
+      apis: [],
+      filteredApis: [],
+      activeTag: 'all',
+      searchTerm: '',
+      favorites: JSON.parse(localStorage.getItem('hubAPIs_favorites') || '[]'),
+      theme: localStorage.getItem('hubAPIs_theme') || 'dark'
+    };
 
-// inicial
-render();
+    /* ========================================
+       BASE DE DADOS (EDITÁVEL)
+       ======================================== */
+    const initialApis = [
+      {
+        id: 'artificial-analysis',
+        name: "Artificial Analysis",
+        desc: "Comparador profissional de modelos de IA (GPT-4o, Claude 3.5, Gemini). Métricas de custo, latência e qualidade.",
+        url: "https://artificialanalysis.ai/",
+        score: 95,
+        tags: ["comparador", "llm", "benchmark"],
+        category: "Análise"
+      },
+      {
+        id: 'bitnada-apis',
+        name: "APIs Gratuitas (BitNada)",
+        desc: "Lista curada de APIs com free tier: Gemini, Hugging Face, OpenRouter, Groq e outras para desenvolvedores.",
+        url: "https://bitnada.com.br/ia/apis-gratuitas.html",
+        score: 85,
+        tags: ["gratis", "lista", "dev"],
+        category: "Curadoria"
+      },
+      {
+        id: 'groq',
+        name: "Groq API",
+        desc: "Inferência ultra-rápida para LLMs open-source (Llama 3, Mixtral). Até 500 tokens/seg com baixa latência.",
+        url: "https://groq.com/",
+        score: 90,
+        tags: ["llm", "rapida", "open-source", "gratis"],
+        category: "Inferência"
+      },
+      {
+        id: 'huggingface',
+        name: "Hugging Face API",
+        desc: "Plataforma com 500k+ modelos open-source para NLP, visão computacional, áudio e mais. Free tier generoso.",
+        url: "https://huggingface.co/",
+        score: 88,
+        tags: ["open-source", "gratis", "llm", "nlp"],
+        category: "Plataforma"
+      },
+      {
+        id: 'openrouter',
+        name: "OpenRouter",
+        desc: "Acesso unificado a 100+ modelos de IA com uma única API. Compare preços e desempenho em tempo real.",
+        url: "https://openrouter.ai/",
+        score: 87,
+        tags: ["llm", "comparador", "gratis"],
+        category: "Agregador"
+      },
+      {
+        id: 'together-ai',
+        name: "Together AI",
+        desc: "Cloud para executar e fine-tunar modelos open-source. Suporte a Llama, Mistral, Qwen e outros.",
+        url: "https://together.ai/",
+        score: 84,
+        tags: ["llm", "open-source", "fine-tune"],
+        category: "Cloud"
+      }
+    ];
 
-// atualiza ranking a cada 10 segundos (simulação gratuita)
-setInterval(autoUpdate, 10000);
+    /* ========================================
+       FUNÇÕES UTILITÁRIAS
+       ======================================== */
+    
+    // Sanitização contra XSS
+    function escapeHtml(str) {
+      if (typeof str !== 'string') return '';
+      const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+      return str.replace(/[&<>"']/g, m => map[m]);
+    }
 
-</script>
+    // Debounce para busca
+    function debounce(func, wait) {
+      let timeout;
+      return function executedFunction(...args) {
+        const later = () => {
+          clearTimeout(timeout);
+          func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+      };
+    }
 
+    // Formatador de data/hora
+    function formatTime(date) {
+      return date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    // Toast notification
+    function showToast(message, type = 'success') {
+      const toast = document.getElementById('toast');
+      const icon = document.getElementById('toast-icon');
+      const text = document.getElementById('toast-message');
+      
+      icon.textContent = type === 'success' ? '✓' : '⚠';
+      text.textContent = message;
+      toast.className = `toast ${type} show`;
+      
+      setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    // Gerenciar favoritos no localStorage
+    function toggleFavorite(apiId) {
+      const index = state.favorites.indexOf(apiId);
+      if (index === -1) {
+        state.favorites.push(apiId);
+        showToast('Adicionado aos favoritos!');
+      } else {
+        state.favorites.splice(index, 1);
+        showToast('Removido dos favoritos');
+      }
+      localStorage.setItem('hubAPIs_favorites', JSON.stringify(state.favorites));
+      render();
+    }
+
+    // Compartilhar via Web Share API
+    async function shareApi(api) {
+      const shareData = {
+        title: api.name,
+        text: api.desc,
+        url: api.url
+      };
+
+      try {
+        if (navigator.share) {
+          await navigator.share(shareData);
+        } else {
+          await navigator.clipboard.writeText(api.url);
+          showToast('Link copiado para a área de transferência!');
+        }
+      } catch (err) {
+        if (err.name !== 'AbortError') {
+          showToast('Não foi possível compartilhar', 'error');
+        }
+      }
+    }
+
+    /* ========================================
+       RENDERIZAÇÃO
+       ======================================== */
+    
+    function filterAndSortApis() {
+      let result = [...initialApis];
+
+      // Filtro por busca
+      if (state.searchTerm) {
+        const term = state.searchTerm.toLowerCase();
+        result = result.filter(api => 
+          api.name.toLowerCase().includes(term) ||
+          api.desc.toLowerCase().includes(term) ||
+          api.tags.some(tag => tag.toLowerCase().includes(term))
+        );
+      }
+
+      // Filtro por tag
+      if (state.activeTag !== 'all') {
+        result = result.filter(api => api.tags.includes(state.activeTag));
+      }
+
+      // Ordenar por score (decrescente)
+      result.sort((a, b) => b.score - a.score);
+      
+      return result;
+    }
+
+    function render() {
+      const list = document.getElementById('list');
+      state.filteredApis = filterAndSortApis();
+
+      // Atualizar estatísticas
+      document.getElementById('totalApis').textContent = state.filteredApis.length;
+      const avg = state.filteredApis.length > 0 
+        ? (state.filteredApis.reduce((sum, api) => sum + api.score, 0) / state.filteredApis.length).toFixed(1)
+        : '0';
+      document.getElementById('avgScore').textContent = avg;
+
+      // Estado vazio
+      if (state.filteredApis.length === 0) {
+        list.innerHTML = `
+          <div class="empty-state">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+            </svg>
+            <p><strong>Nenhum resultado encontrado</strong></p>
+            <p style="font-size: 0.9rem; margin-top: 4px;">Tente buscar por outro termo ou limpe os filtros</p>
+          </div>
+        `;
+        return;
+      }
+
+      // Renderizar cards
+      list.innerHTML = state.filteredApis.map((api, index) => {
+        const isFavorite = state.favorites.includes(api.id);
+        const scorePercent = ((api.score - CONFIG.minScore) / (CONFIG.maxScore - CONFIG.minScore)) * 100;
+        
+        return `
+          <article class="card" data-id="${api.id}" aria-labelledby="card-title-${api.id}">
+            <div class="card-header">
+              <span class="rank">#${index + 1} Ranking</span>
+              <button 
+                class="favorite-btn ${isFavorite ? 'active' : ''}" 
+                aria-label="${isFavorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}"
+                data-id="${api.id}"
+              >
+                ${isFavorite ? '❤️' : '🤍'}
+              </button>
+            </div>
+            
+            <h3 id="card-title-${api.id}">${escapeHtml(api.name)}</h3>
+            <p>${escapeHtml(api.desc)}</p>
+            
+            <div class="tags">
+              ${api.tags.slice(0, 3).map(tag => `<span class="tag">${escapeHtml(tag)}</span>`).join('')}
+            </div>
+            
+            <div class="score-wrapper">
+              <div class="score-header">
+                <span>Score de qualidade</span>
+                <span class="score-value">${api.score}/100</span>
+              </div>
+              <div class="score-bar" role="progressbar" aria-valuenow="${api.score}" aria-valuemin="0" aria-valuemax="100">
+                <div class="score-fill" style="--score: ${scorePercent}%"></div>
+              </div>
+            </div>
+            
+            <div class="card-actions">
+              <a class="btn" href="${escapeHtml(api.url)}" target="_blank" rel="noopener noreferrer">
+                🔗 Acessar
+              </a>
+              <button class="btn btn-secondary" data-share="${api.id}" aria-label="Compartilhar ${escapeHtml(api.name)}">
+                📤
+              </button>
+            </div>
+          </article>
+        `;
+      }).join('');
+
+      // Atualizar timestamp
+      document.getElementById('lastUpdate').textContent = `Atualizado: ${formatTime(new Date())}`;
+    }
+
+    /* ========================================
+       ATUALIZAÇÃO AUTOMÁTICA (SIMULAÇÃO)
+       ======================================== */
+    
+    function simulateScoreUpdate() {
+      // Em produção: substituir por fetch() em API real
+      initialApis.forEach(api => {
+        const variation = Math.floor(Math.random() * CONFIG.scoreVariation * 2) - CONFIG.scoreVariation;
+        api.score = Math.min(CONFIG.maxScore, Math.max(CONFIG.minScore, api.score + variation));
+      });
+      
+      if (document.getElementById('searchInput').value === '' && state.activeTag === 'all') {
+        render();
+      }
+    }
+
+    function startAutoUpdate() {
+      setInterval(simulateScoreUpdate, CONFIG.autoUpdateInterval);
+    }
+
+    /* ========================================
+       EVENT LISTENERS
+       ======================================== */
+    
+    function setupEventListeners() {
+      // Busca com debounce
+      const searchInput = document.getElementById('searchInput');
+      const debouncedRender = debounce(() => {
+        state.searchTerm = searchInput.value.trim();
+        render();
+      }, CONFIG.debounceDelay);
+      
+      searchInput.addEventListener('input', debouncedRender);
+
+      // Filtros por tag
+      document.querySelectorAll('.tag-filter').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          document.querySelectorAll('.tag-filter').forEach(b => {
+            b.classList.remove('active');
+            b.setAttribute('aria-selected', 'false');
+          });
+          e.currentTarget.classList.add('active');
+          e.currentTarget.setAttribute('aria-selected', 'true');
+          state.activeTag = e.currentTarget.dataset.tag;
+          render();
+        });
+      });
+
+      // Botão de refresh manual
+      const refreshBtn = document.getElementById('refreshBtn');
+      refreshBtn.addEventListener('click', async () => {
+        refreshBtn.classList.add('loading');
+        document.getElementById('refreshIcon').textContent = '⏳';
+        document.getElementById('refreshText').textContent = 'Atualizando...';
+        
+        // Simular loading
+        await new Promise(resolve => setTimeout(resolve, 800));
+        simulateScoreUpdate();
+        render();
+        
+        refreshBtn.classList.remove('loading');
+        document.getElementById('refreshIcon').textContent = '🔄';
+        document.getElementById('refreshText').textContent = 'Atualizar';
+        showToast('Ranking atualizado com sucesso!');
+      });
+
+      // Delegação de eventos para cards (favorite & share)
+      document.getElementById('list').addEventListener('click', (e) => {
+        const favBtn = e.target.closest('.favorite-btn');
+        const shareBtn = e.target.closest('[data-share]');
+        
+        if (favBtn) {
+          e.preventDefault();
+          toggleFavorite(favBtn.dataset.id);
+        }
+        
+        if (shareBtn) {
+          e.preventDefault();
+          const api = initialApis.find(a => a.id === shareBtn.dataset.share);
+          if (api) shareApi(api);
+        }
+      });
+
+      // Alternar tema
+      document.getElementById('toggleTheme').addEventListener('click', (e) => {
+        e.preventDefault();
+        state.theme = state.theme === 'dark' ? 'light' : 'dark';
+        localStorage.setItem('hubAPIs_theme', state.theme);
+        document.documentElement.style.colorScheme = state.theme;
+        showToast(`Tema ${state.theme === 'dark' ? 'escuro' : 'claro'} ativado`);
+      });
+
+      // Exportar dados
+      document.getElementById('exportData').addEventListener('click', (e) => {
+        e.preventDefault();
+        const dataStr = JSON.stringify(initialApis, null, 2);
+        const blob = new Blob([dataStr], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `hub-apis-${new Date().toISOString().slice(0,10)}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        showToast('Dados exportados com sucesso!');
+      });
+
+      // Suporte a teclado para favoritos
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && document.activeElement?.classList.contains('favorite-btn')) {
+          toggleFavorite(document.activeElement.dataset.id);
+        }
+      });
+    }
+
+    /* ========================================
+       INICIALIZAÇÃO
+       ======================================== */
+    
+    function init() {
+      // Aplicar tema salvo
+      if (state.theme === 'light') {
+        document.documentElement.style.colorScheme = 'light';
+      }
+
+      // Carregar dados
+      state.apis = JSON.parse(JSON.stringify(initialApis)); // deep clone
+      render();
+      
+      // Setup listeners
+      setupEventListeners();
+      
+      // Iniciar auto-update
+      startAutoUpdate();
+      
+      // Analytics básico (opcional)
+      console.log('🤖 Hub de APIs inicializado •', new Date().toLocaleTimeString('pt-BR'));
+    }
+
+    // Iniciar quando DOM estiver pronto
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  </script>
+
+  <!-- Structured Data para SEO -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Hub de APIs e Inteligência Artificial",
+    "description": "Ranking gratuito de ferramentas e APIs de inteligência artificial para desenvolvedores",
+    "url": "https://seudominio.com/",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://seudominio.com/?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
 </body>
 </html>
