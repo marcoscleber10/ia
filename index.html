@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>APIs de IA e Comparação de Modelos</title>
+  <title>Hub de APIs e IA</title>
+
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -13,66 +14,75 @@
     }
 
     header {
-      padding: 30px;
+      padding: 25px;
       text-align: center;
       background: #111827;
     }
 
     header h1 {
       margin: 0;
-      font-size: 26px;
+      font-size: 24px;
     }
 
     header p {
       color: #94a3b8;
-      margin-top: 10px;
+    }
+
+    .search {
+      display: flex;
+      justify-content: center;
+      margin: 20px;
+    }
+
+    input {
+      width: 90%;
+      max-width: 500px;
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      outline: none;
     }
 
     .container {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      padding: 20px;
-      gap: 20px;
+      gap: 15px;
+      padding: 10px;
     }
 
     .card {
       background: #1e293b;
       border-radius: 12px;
-      padding: 20px;
-      width: 320px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.3);
-      transition: transform 0.2s;
+      padding: 15px;
+      width: 300px;
+      transition: 0.2s;
     }
 
     .card:hover {
       transform: scale(1.03);
     }
 
-    .card h2 {
-      font-size: 18px;
-      margin-bottom: 10px;
+    .rank {
+      font-size: 12px;
+      color: #38bdf8;
+      margin-bottom: 5px;
     }
 
-    .card p {
-      font-size: 14px;
-      color: #cbd5e1;
-      line-height: 1.5;
+    .score {
+      font-size: 12px;
+      color: #a7f3d0;
     }
 
     .btn {
       display: inline-block;
-      margin-top: 15px;
-      padding: 10px 15px;
+      margin-top: 10px;
+      padding: 8px 12px;
       background: #3b82f6;
       color: white;
       text-decoration: none;
-      border-radius: 8px;
-      font-size: 14px;
-    }
-
-    .btn:hover {
-      background: #2563eb;
+      border-radius: 6px;
+      font-size: 13px;
     }
 
     footer {
@@ -87,43 +97,107 @@
 <body>
 
 <header>
-  <h1>🔍 Ferramentas de IA e Análise de APIs</h1>
-  <p>Comparação de modelos de IA e listas de APIs gratuitas para desenvolvimento</p>
+  <h1>🤖 Hub de APIs e Inteligência Artificial</h1>
+  <p>Ranking gratuito de ferramentas e APIs de IA atualizado automaticamente</p>
 </header>
 
-<div class="container">
-
-  <!-- Artificial Analysis -->
-  <div class="card">
-    <h2>📊 Artificial Analysis</h2>
-    <p>
-      Plataforma que compara modelos de inteligência artificial como GPT, Claude e Gemini.
-      Mostra desempenho, velocidade, custo por token e benchmarks atualizados.
-      Ideal para escolher o melhor modelo de IA para cada tarefa.
-    </p>
-    <a class="btn" href="https://artificialanalysis.ai/" target="_blank">
-      Acessar Site
-    </a>
-  </div>
-
-  <!-- BitNada / APIs gratuitas -->
-  <div class="card">
-    <h2>🧠 APIs Gratuitas de IA</h2>
-    <p>
-      Lista de APIs de inteligência artificial gratuitas ou com free tier.
-      Inclui ferramentas como Gemini, Hugging Face, OpenRouter e outras.
-      Ideal para desenvolvedores que querem testar IA sem custo inicial.
-    </p>
-    <a class="btn" href="https://bitnada.com.br/ia/apis-gratuitas.html" target="_blank">
-      Acessar Lista
-    </a>
-  </div>
-
+<!-- SEARCH -->
+<div class="search">
+  <input id="searchInput" placeholder="🔎 Buscar API ou ferramenta..." onkeyup="render()">
 </div>
 
+<!-- LIST -->
+<div class="container" id="list"></div>
+
 <footer>
-  Projeto simples de curadoria de ferramentas de IA • 2026
+  Sistema gratuito de curadoria de APIs • Atualização automática simulada
 </footer>
+
+<script>
+/* ---------------------------
+   BASE DE DADOS (EDITÁVEL)
+----------------------------*/
+let apis = [
+  {
+    name: "Artificial Analysis",
+    desc: "Comparador de modelos de IA (GPT, Claude, Gemini). Mostra custo, velocidade e performance.",
+    url: "https://artificialanalysis.ai/",
+    score: 95
+  },
+  {
+    name: "APIs Gratuitas (BitNada)",
+    desc: "Lista de APIs com free tier como Gemini, Hugging Face, OpenRouter e outras.",
+    url: "https://bitnada.com.br/ia/apis-gratuitas.html",
+    score: 85
+  },
+  {
+    name: "Groq API",
+    desc: "API extremamente rápida para LLMs open-source como Llama e Mixtral.",
+    url: "https://groq.com/",
+    score: 90
+  },
+  {
+    name: "Hugging Face API",
+    desc: "Plataforma com centenas de modelos open-source para IA e NLP.",
+    url: "https://huggingface.co/",
+    score: 88
+  }
+];
+
+/* ---------------------------
+   RENDERIZAÇÃO + RANKING
+----------------------------*/
+function render() {
+  const list = document.getElementById("list");
+  const search = document.getElementById("searchInput").value.toLowerCase();
+
+  let filtered = apis.filter(a =>
+    a.name.toLowerCase().includes(search) ||
+    a.desc.toLowerCase().includes(search)
+  );
+
+  // ranking automático
+  filtered.sort((a, b) => b.score - a.score);
+
+  list.innerHTML = "";
+
+  filtered.forEach((api, index) => {
+    list.innerHTML += `
+      <div class="card">
+        <div class="rank">#${index + 1} no ranking</div>
+        <h3>${api.name}</h3>
+        <p>${api.desc}</p>
+        <div class="score">Score: ${api.score}</div>
+        <a class="btn" href="${api.url}" target="_blank">Acessar</a>
+      </div>
+    `;
+  });
+}
+
+/* ---------------------------
+   AUTO UPDATE SIMULADO
+   (aqui você pode trocar por API real depois)
+----------------------------*/
+function autoUpdate() {
+  apis = apis.map(api => {
+    // simula variação leve de score
+    let variation = Math.floor(Math.random() * 3) - 1;
+    return {
+      ...api,
+      score: Math.min(100, Math.max(60, api.score + variation))
+    };
+  });
+
+  render();
+}
+
+// inicial
+render();
+
+// atualiza ranking a cada 10 segundos (simulação gratuita)
+setInterval(autoUpdate, 10000);
+
+</script>
 
 </body>
 </html>
